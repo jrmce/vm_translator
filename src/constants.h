@@ -1,0 +1,10 @@
+#define BUFFER_LENGTH 255
+#define PUSH 1
+#define POP 2
+#define ARITHMETIC 3
+#define LABEL 4
+#define GOTO 5
+#define IF 6
+#define FUNCTION 7
+#define RETURN 8
+#define CALL 9
