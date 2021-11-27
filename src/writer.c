@@ -56,7 +56,7 @@ void pop_basic_mem(Code *code, char *mem_loc) {
       write_command("A=A+1\n");
     }
   }
-  write_command("M=D @SP M=M+1\n");
+  write_command("M=D\n");
 }
 
 void write_arithmetic(Code *code) {
@@ -121,10 +121,15 @@ void write_push_pop(Code *code) {
     } else if (strcmp(code->arg_1, "that") == 0) {
       push_basic_mem(code, "@THAT");
     } else if (strcmp(code->arg_1, "temp") == 0) {
-      char location[7] = "@Temp";
-      strncat(location, code->arg_2, 2);
-      fprintf(fp_out, "%s\n", location);
-      write_command("A=M D=M @SP A=M M=D @SP M=M+1\n");
+      int arg_2 = atoi(code->arg_2);
+      int loc = 5;
+      if (arg_2 > 0) {
+        for (int i = 1; i <= arg_2; i++) {
+          loc++;
+        }
+        fprintf(fp_out, "@%d\n", loc);
+      }
+      write_command("D=M @SP A=M M=D @SP M=M+1\n");
     }
   } else if (code->command_type == POP) {
     if (strcmp(code->arg_1, "local") == 0) {
@@ -136,11 +141,16 @@ void write_push_pop(Code *code) {
     } else if (strcmp(code->arg_1, "that") == 0) {
       pop_basic_mem(code, "@THAT");
     } else if (strcmp(code->arg_1, "temp") == 0) {
-      char location[7] = "@Temp";
-      strncat(location, code->arg_2, 2);
       write_command("@SP M=M-1 A=M D=M\n");
-      fprintf(fp_out, "%s\n", location);
-      write_command("A=M M=D @SP M=M+1\n");
+      int arg_2 = atoi(code->arg_2);
+      int loc = 5;
+      if (arg_2 > 0) {
+        for (int i = 1; i <= arg_2; i++) {
+          loc++;
+        }
+        fprintf(fp_out, "@%d\n", loc);
+      }
+      write_command("M=D\n");
     }
   }
 }
