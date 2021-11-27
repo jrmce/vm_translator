@@ -40,9 +40,9 @@ void write_arithmetic(Code *code) {
   if (strcmp(code->arg_1, "add") == 0) {
     write_command("@SP M=M-1 A=M D=M @SP M=M-1 A=M M=D+M @SP M=M+1\n");
   } else if (strcmp(code->arg_1, "sub") == 0) {
-    write_command("@SP M=M-1 A=M D=M @SP M=M-1 A=M M=D-M @SP M=M+1\n");
+    write_command("@SP M=M-1 A=M D=M @SP M=M-1 A=M M=M-D @SP M=M+1\n");
   } else if (strcmp(code->arg_1, "neg") == 0) {
-    write_command("@SP D=M D=D-1 A=D M=-M @SP M=M+1\n");
+    write_command("@SP M=M-1 A=M M=-M @SP M=M+1\n");
   } else if (strcmp(code->arg_1, "and") == 0) {
     write_command("@SP M=M-1 A=M D=M @SP M=M-1 A=M M=D&M @SP M=M+1\n");
   } else if (strcmp(code->arg_1, "or") == 0) {
@@ -60,7 +60,7 @@ void write_arithmetic(Code *code) {
     fprintf(fp_out, "%d", arithmetic_counter);
     write_command(") @SP M=M+1\n");
   } else if (strcmp(code->arg_1, "lt") == 0) {
-    write_command("@SP M=M-1 A=M D=M @SP M=M-1 A=M D=D-M @LT_");
+    write_command("@SP M=M-1 A=M D=M @SP M=M-1 A=M D=M-D @LT_");
     fprintf(fp_out, "%d\n", arithmetic_counter);
     write_command("D;JLT @SP A=M M=0 @LTEND_");
     fprintf(fp_out, "%d\n", arithmetic_counter);
@@ -70,7 +70,7 @@ void write_arithmetic(Code *code) {
     fprintf(fp_out, "%d", arithmetic_counter);
     write_command(") @SP M=M+1\n");
   } else if (strcmp(code->arg_1, "gt") == 0) {
-    write_command("@SP M=M-1 A=M D=M @SP M=M-1 A=M D=D-M @GT_");
+    write_command("@SP M=M-1 A=M D=M @SP M=M-1 A=M D=M-D @GT_");
     fprintf(fp_out, "%d\n", arithmetic_counter);
     write_command("D;JGT @SP A=M M=0 @GTEND_");
     fprintf(fp_out, "%d\n", arithmetic_counter);
@@ -84,9 +84,12 @@ void write_arithmetic(Code *code) {
 
 void write_push_pop(Code *code) {
   if (strcmp(code->arg_1, "constant") == 0) {
-    fprintf(fp_out, "@%d\n", arithmetic_counter);
+    fprintf(fp_out, "@%s\n", code->arg_2);
     write_command("D=A @SP A=M M=D @SP M=M+1\n");
   }
 }
 
-void close_writer() { fclose(fp_out); }
+void close_writer() {
+  write_command("(END) @END 0;JEQ");
+  fclose(fp_out);
+}

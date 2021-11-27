@@ -1,4 +1,5 @@
 *.txt
 *.asm
+*.vm
 .vscode/
 vm_translator
