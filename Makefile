@@ -1,8 +1,14 @@
+FLAGS=-Wall -Wextra -Wpedantic -Wconversion -Wformat-security -Werror
+STD=-std=c17
+CMD=gcc
+PROG=vm_translator
+FILES=./src/*.c
+
 build:
-	gcc -Wall -std=c17 ./src/*.c -o vm_translator
+	$(CMD) $(STD) $(FLAGS) $(FILES) -o $(PROG)
 debug:
-	gcc -Wall -std=c17 -g ./src/*.c -o vm_translator
-launch:
-	./vm_translator test.txt
+	$(CMD) $(STD) $(FLAGS) -g $(FILES) -o $(PROG)
+run:
+	./$(PROG) src/test.txt
 clean:
-	rm vm_translator
+	rm $(PROG)

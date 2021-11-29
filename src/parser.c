@@ -10,7 +10,9 @@
 static FILE *fp;
 
 void init_parser(char const *filename) {
-  fp = fopen(filename, "r");
+  char filename_loc[50] = "../";
+  strcat(filename_loc, filename);
+  fp = fopen(filename_loc, "r");
   if (fp == NULL) {
     printf("Error opening source file: %s\n", filename);
     exit(1);

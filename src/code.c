@@ -5,7 +5,7 @@
 
 #include "parser.h"
 
-void init_code(Code *code, char *buffer) {
+void init_code(Code *code, char *buffer, const char* filename) {
   set_command_literal(code->command_literal, buffer);
   set_command_type(code);
 
@@ -16,4 +16,6 @@ void init_code(Code *code, char *buffer) {
 
   set_arg_1(code, buffer);
   set_arg_2(code, buffer);
+  strncpy(code->filename, filename, ARG_LENGTH);
+  strtok(code->filename, ".");
 }

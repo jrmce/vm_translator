@@ -120,6 +120,17 @@ void write_push_pop(Code *code) {
       push_basic_mem(code, "@THIS");
     } else if (strcmp(code->arg_1, "that") == 0) {
       push_basic_mem(code, "@THAT");
+    } else if (strcmp(code->arg_1, "static") == 0) {
+      fprintf(fp_out, "@%s.%s\n", code->filename, code->arg_2);
+      write_command("D=M @SP A=M M=D @SP M=M+1\n");
+    } else if (strcmp(code->arg_1, "pointer") == 0) {
+      int arg_2 = atoi(code->arg_2);
+      if (arg_2 == 0) {
+        write_command("@THIS\n");
+      } else if (arg_2 == 1) {
+        write_command("@THAT\n");
+      }
+      write_command("D=M @SP A=M M=D @SP M=M+1\n");
     } else if (strcmp(code->arg_1, "temp") == 0) {
       int arg_2 = atoi(code->arg_2);
       int loc = 5;
@@ -140,6 +151,19 @@ void write_push_pop(Code *code) {
       pop_basic_mem(code, "@THIS");
     } else if (strcmp(code->arg_1, "that") == 0) {
       pop_basic_mem(code, "@THAT");
+    } else if (strcmp(code->arg_1, "static") == 0) {
+      write_command("@SP M=M-1 A=M D=M\n");
+      fprintf(fp_out, "@%s.%s\n", code->filename, code->arg_2);
+      write_command("M=D\n");
+    } else if (strcmp(code->arg_1, "pointer") == 0) {
+      write_command("@SP M=M-1 A=M D=M\n");
+      int arg_2 = atoi(code->arg_2);
+      if (arg_2 == 0) {
+        write_command("@THIS\n");
+      } else if (arg_2 == 1) {
+        write_command("@THAT\n");
+      }
+      write_command("M=D\n");
     } else if (strcmp(code->arg_1, "temp") == 0) {
       write_command("@SP M=M-1 A=M D=M\n");
       int arg_2 = atoi(code->arg_2);

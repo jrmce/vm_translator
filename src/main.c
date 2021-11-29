@@ -32,7 +32,7 @@ int main(int argc, char const *argv[]) {
 
   while (has_more_commands) {
     Code code;
-    init_code(&code, buffer);
+    init_code(&code, buffer, filename);
 
     switch (code.command_type) {
       case ARITHMETIC:
