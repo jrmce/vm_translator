@@ -10,8 +10,8 @@ static int arithmetic_counter = 0;
 static FILE *fp_out;
 
 void init_writer(char const *filename) {
-  char output_filename[20];
-  strncpy(output_filename, filename, 20);
+  char output_filename[150];
+  strncpy(output_filename, filename, 100);
   strtok(output_filename, ".");
   strcat(output_filename, ".asm");
   fp_out = fopen(output_filename, "w");

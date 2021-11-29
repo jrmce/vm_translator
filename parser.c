@@ -19,7 +19,7 @@ void init_parser(char const *filename) {
 
 void set_with_token_num(char *dest, int token_num, char *buffer) {
   char temp[BUFFER_LENGTH];
-  strcpy(temp, buffer);
+  strncpy(temp, buffer, BUFFER_LENGTH);
   char *token = strtok(temp, " ");
   int count = 0;
   while (token && count < token_num) {

@@ -3,7 +3,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <time.h>
 
 #include "code.h"
 #include "constants.h"
@@ -11,20 +10,29 @@
 #include "util.h"
 #include "writer.h"
 
-int main(int argc, char const *argv[]) {
-  clock_t start;
-  clock_t end;
-  double cpu_time_used;
-  start = clock();
+int main(int argc, char *argv[]) {
   char buffer[BUFFER_LENGTH];
+  char filename_no_ext[150];
 
   if (argc < 2) {
     exit(1);
   }
 
-  char const *filename = argv[1];
+  char *filename = argv[1];
+
   init_parser(filename);
   init_writer(filename);
+
+  int i = 0;
+  while (filename[i] != '/') {
+    if (filename[i] == '.') {
+      i = -1;
+      break;
+    }
+    i++;
+  }
+  strncpy(filename_no_ext, &filename[i + 1], 150);
+  strtok(filename_no_ext, ".");
 
   // Writes line to buffer and returns whether there are
   // more commands
@@ -32,7 +40,7 @@ int main(int argc, char const *argv[]) {
 
   while (has_more_commands) {
     Code code;
-    init_code(&code, buffer, filename);
+    init_code(&code, buffer, filename_no_ext);
 
     switch (code.command_type) {
       case ARITHMETIC:
@@ -52,8 +60,5 @@ int main(int argc, char const *argv[]) {
   close_parser();
   close_writer();
 
-  end = clock();
-  cpu_time_used = ((double)(end - start)) / CLOCKS_PER_SEC;
-  printf("main() took %f seconds to execute \n", cpu_time_used);
   return 0;
 }
