@@ -2,4 +2,4 @@
 *.asm
 *.vm
 .vscode/
-vm_translator
+VMTranslator
