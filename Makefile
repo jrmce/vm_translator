@@ -4,11 +4,11 @@ CMD=gcc
 PROG=VMTranslator
 FILES=*.c
 
-build:
+build: clean
 	$(CMD) $(STD) $(FLAGS) $(FILES) -o $(PROG)
 debug:
 	$(CMD) $(STD) $(FLAGS) -g $(FILES) -o $(PROG)
 run:
 	./$(PROG) test.txt
 clean:
-	rm $(PROG)
+	rm -f $(PROG) *.asm

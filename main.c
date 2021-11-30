@@ -20,44 +20,17 @@ int main(int argc, char *argv[]) {
 
   char *filename = argv[1];
 
-  init_parser(filename);
-  init_writer(filename);
+  char *is_file = strstr(filename, ".vm");
 
-  int i = 0;
-  while (filename[i] != '/') {
-    if (filename[i] == '.') {
-      i = -1;
-      break;
-    }
-    i++;
-  }
-  strncpy(filename_no_ext, &filename[i + 1], 150);
-  strtok(filename_no_ext, ".");
-
-  // Writes line to buffer and returns whether there are
-  // more commands
-  bool has_more_commands = get_next_line(buffer);
-
-  while (has_more_commands) {
-    Code code;
-    init_code(&code, buffer, filename_no_ext);
-
-    switch (code.command_type) {
-      case ARITHMETIC:
-        write_arithmetic(&code);
-        break;
-      case PUSH:
-      case POP:
-        write_push_pop(&code);
-        break;
-      default:
-        break;
-    }
-
-    has_more_commands = get_next_line(buffer);
+  if (is_file == NULL) { // Directory
+    init_writer(filename);
+    parse_dir(buffer, filename);
+  } else { // File
+    get_filename_no_ext(filename, filename_no_ext);
+    init_writer(filename_no_ext);
+    parse_file(buffer, filename, filename_no_ext);
   }
 
-  close_parser();
   close_writer();
 
   return 0;

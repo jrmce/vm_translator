@@ -1,4 +1,5 @@
 #include <ctype.h>
+#include <dirent.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -6,28 +7,9 @@
 #include "code.h"
 #include "constants.h"
 #include "util.h"
+#include "writer.h"
 
 static FILE *fp;
-
-void init_parser(char const *filename) {
-  fp = fopen(filename, "r");
-  if (fp == NULL) {
-    printf("Error opening source file: %s\n", filename);
-    exit(1);
-  }
-}
-
-void set_with_token_num(char *dest, int token_num, char *buffer) {
-  char temp[BUFFER_LENGTH];
-  strncpy(temp, buffer, BUFFER_LENGTH);
-  char *token = strtok(temp, " ");
-  int count = 0;
-  while (token && count < token_num) {
-    count++;
-    token = strtok(NULL, " ");
-  }
-  strcpy(dest, token);
-}
 
 bool get_next_line(char *buffer) {
   if (fgets(buffer, BUFFER_LENGTH, fp) != NULL) {
@@ -38,6 +20,58 @@ bool get_next_line(char *buffer) {
   } else {
     return false;
   }
+}
+
+void parse_file(char *buffer, char *filename, char *filename_no_ext) {
+  fp = fopen(filename, "r");
+  if (fp == NULL) {
+    printf("Error opening source file: %s\n", filename);
+    exit(1);
+  }
+
+  // Writes line to buffer and returns whether there are
+  // more commands
+  bool has_more_commands = get_next_line(buffer);
+
+  while (has_more_commands) {
+    Code code;
+    init_code(&code, buffer, filename_no_ext);
+
+    switch (code.command_type) {
+    case ARITHMETIC:
+      write_arithmetic(&code);
+      break;
+    case PUSH:
+    case POP:
+      write_push_pop(&code);
+      break;
+    default:
+      break;
+    }
+
+    has_more_commands = get_next_line(buffer);
+  }
+  fclose(fp);
+}
+
+void parse_dir(char *buffer, char *dirname) {
+  char filename_no_ext[150];
+  DIR *dr = opendir(dirname);
+
+  if (dr == NULL) {
+    printf("Error opening directory: %s", dirname);
+  }
+
+  struct dirent *de;
+
+  while ((de = readdir(dr)) != NULL) {
+    if (strstr(de->d_name, ".vm") != NULL) {
+      get_filename_no_ext(de->d_name, filename_no_ext);
+      parse_file(buffer, de->d_name, filename_no_ext);
+    }
+  }
+
+  closedir(dr);
 }
 
 void set_command_literal(char *command, char *buffer) {

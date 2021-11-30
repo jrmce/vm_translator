@@ -6,5 +6,6 @@
 
 bool is_empty(char* line);
 bool is_comment(char* line);
+void get_filename_no_ext(char *filename, char *dest);
 
 #endif
