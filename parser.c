@@ -67,7 +67,11 @@ void parse_dir(char *buffer, char *dirname) {
   while ((de = readdir(dr)) != NULL) {
     if (strstr(de->d_name, ".vm") != NULL) {
       get_filename_no_ext(de->d_name, filename_no_ext);
-      parse_file(buffer, de->d_name, filename_no_ext);
+      char dirname_c[150];
+      strcpy(dirname_c, dirname);
+      strcat(dirname_c, "/");
+      strcat(dirname_c, de->d_name);
+      parse_file(buffer, dirname_c, filename_no_ext);
     }
   }
 

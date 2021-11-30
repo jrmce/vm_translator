@@ -6,9 +6,10 @@ FILES=*.c
 
 build: clean
 	$(CMD) $(STD) $(FLAGS) $(FILES) -o $(PROG)
-debug:
+debug: clean
 	$(CMD) $(STD) $(FLAGS) -g $(FILES) -o $(PROG)
 run:
 	./$(PROG) test.txt
 clean:
-	rm -f $(PROG) *.asm
+	rm -f $(PROG)
+	rm -f *.asm
