@@ -45,6 +45,24 @@ void parse_file(char *buffer, char *filename, char *filename_no_ext) {
     case POP:
       write_push_pop(&code);
       break;
+    case LABEL:
+      write_label(&code);
+      break;
+    case IF:
+      write_if(&code);
+      break;
+    case GOTO:
+      write_goto(&code);
+      break;
+    case FUNCTION:
+      write_function(&code);
+      break;
+    case RETURN:
+      write_return();
+      break;
+    case CALL:
+      write_call(&code);
+      break;
     default:
       break;
     }
@@ -55,7 +73,7 @@ void parse_file(char *buffer, char *filename, char *filename_no_ext) {
 }
 
 void parse_dir(char *buffer, char *dirname) {
-  char filename_no_ext[150];
+  char filename_no_ext[MAX_FILENAME_LENGTH];
   DIR *dr = opendir(dirname);
 
   if (dr == NULL) {
@@ -67,7 +85,7 @@ void parse_dir(char *buffer, char *dirname) {
   while ((de = readdir(dr)) != NULL) {
     if (strstr(de->d_name, ".vm") != NULL) {
       get_filename_no_ext(de->d_name, filename_no_ext);
-      char dirname_c[150];
+      char dirname_c[MAX_FILENAME_LENGTH];
       strcpy(dirname_c, dirname);
       strcat(dirname_c, "/");
       strcat(dirname_c, de->d_name);
@@ -103,6 +121,18 @@ int set_command_type(Code *code) {
              strcmp(code->command_literal, "and") == 0 ||
              strcmp(code->command_literal, "or") == 0) {
     code->command_type = ARITHMETIC;
+  } else if (strcmp(code->command_literal, "label") == 0) {
+    code->command_type = LABEL;
+  } else if (strcmp(code->command_literal, "if-goto") == 0) {
+    code->command_type = IF;
+  } else if (strcmp(code->command_literal, "goto") == 0) {
+    code->command_type = GOTO;
+  } else if (strcmp(code->command_literal, "function") == 0) {
+    code->command_type = FUNCTION;
+  } else if (strcmp(code->command_literal, "return") == 0) {
+    code->command_type = RETURN;
+  } else if (strcmp(code->command_literal, "call") == 0) {
+    code->command_type = CALL;
   }
   return 0;
 }
@@ -110,6 +140,14 @@ int set_command_type(Code *code) {
 void set_arg_1(Code *code, char *buffer) {
   if (code->command_type == ARITHMETIC) {
     sscanf(buffer, "%s %*s %*s", code->arg_1);
+  } else if (code->command_type == LABEL) {
+    sscanf(buffer, "%*s %s", code->arg_1);
+  } else if (code->command_type == GOTO) {
+    sscanf(buffer, "%*s %s", code->arg_1);
+  } else if (code->command_type == IF) {
+    sscanf(buffer, "%*s %s", code->arg_1);
+  } else if (code->command_type == RETURN) {
+    return;
   } else {
     sscanf(buffer, "%*s %s %*s", code->arg_1);
   }

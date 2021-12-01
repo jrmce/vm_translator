@@ -12,7 +12,7 @@
 
 int main(int argc, char *argv[]) {
   char buffer[BUFFER_LENGTH];
-  char filename_no_ext[150];
+  char filename_no_ext[MAX_FILENAME_LENGTH];
 
   if (argc < 2) {
     exit(1);

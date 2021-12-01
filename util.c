@@ -6,7 +6,8 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
-#include "./util.h"
+#include "constants.h"
+#include "util.h"
 
 bool is_empty(char* line) {
   while (*line != '\0') {
@@ -50,6 +51,6 @@ void get_filename_no_ext(char *filename, char *dest) {
     i++;
   }
 
-  strncpy(dest, &filename[i + 1], 150);
+  strncpy(dest, &filename[i + 1], MAX_FILENAME_LENGTH);
   strtok(dest, ".");
 }

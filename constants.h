@@ -1,4 +1,5 @@
 #define BUFFER_LENGTH 255
+#define MAX_FILENAME_LENGTH 150
 #define PUSH 1
 #define POP 2
 #define ARITHMETIC 3
