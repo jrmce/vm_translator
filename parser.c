@@ -61,7 +61,7 @@ void parse_file(char *buffer, char *filename, char *filename_no_ext) {
       write_return();
       break;
     case CALL:
-      write_call(&code);
+      write_call(code.arg_1, code.arg_2);
       break;
     default:
       break;
