@@ -23,11 +23,11 @@ int main(int argc, char *argv[]) {
   char *is_file = strstr(filename, ".vm");
 
   if (is_file == NULL) { // Directory
-    init_writer(filename);
+    init_writer(filename, true);
     parse_dir(buffer, filename);
   } else { // File
     get_filename_no_ext(filename, filename_no_ext);
-    init_writer(filename_no_ext);
+    init_writer(filename_no_ext, false);
     parse_file(buffer, filename, filename_no_ext);
   }
 

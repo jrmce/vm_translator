@@ -14,15 +14,24 @@ static FILE *fp_out;
 static char MAIN_FN[] = "Main";
 static char output_filename[MAX_FILENAME_LENGTH];
 
-void init_writer(char *filename) {
+void init_writer(char *filename, bool is_dir) {
   strncpy(output_filename, filename, MAX_FILENAME_LENGTH - strlen(".asm"));
+  if (is_dir) {
+    strcat(output_filename, "/");
+    strcat(output_filename, filename);
+  }
   strcat(output_filename, ".asm");
+
   fp_out = fopen(output_filename, "w");
+
   if (fp_out == NULL) {
     printf("Error creating dest file: %s\n", filename);
     exit(1);
   }
-  write_init();
+
+  if (is_dir) {
+    write_init();
+  }
 }
 
 char *get_active_fn_name(void) {
